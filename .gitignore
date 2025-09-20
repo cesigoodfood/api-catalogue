@@ -205,3 +205,33 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ------------------------------
+# Docker
+# ------------------------------
+# Docker files
+docker-compose.override.yml
+*.log
+*.pid
+*.sock
+*.pid.lock
+
+# Docker volumes (PostgreSQL & Redis)
+api-stock_db_data/
+api-stock_redis_data/
+
+# ------------------------------
+# IDE / OS
+# ------------------------------
+# VS Code
+.vscode/
+
+# JetBrains
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini

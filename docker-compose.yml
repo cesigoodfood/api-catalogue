@@ -1,0 +1,34 @@
+services:
+  web:
+    build: .
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      - POSTGRES_DB=cataloguedb
+      - POSTGRES_USER=catalogueuser
+      - POSTGRES_PASSWORD=cataloguepass
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: cataloguedb
+      POSTGRES_USER: catalogueuser
+      POSTGRES_PASSWORD: cataloguepass
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+volumes:
+  db_data:
