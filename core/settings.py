@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'catalogue.apps.CatalogueConfig',
 ]
 
 MIDDLEWARE = [
@@ -78,13 +80,13 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_DB', 'cataloguedb'),
         'USER': os.environ.get('POSTGRES_USER', 'catalogueuser'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'cataloguepass'),
-        'HOST': 'db',
+        'HOST': os.environ.get('POSTGRES_HOST', 'db'),
         'PORT': 5432,
     }
 }
 
 REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
-REDIS_PORT = int(os.environ.get('REDIS_PORT', 6379))
+REDIS_PORT = int(os.environ.get('REDIS_PORT', 6380))
 
 
 # Password validation
