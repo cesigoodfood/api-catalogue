@@ -9,12 +9,43 @@ services:
     depends_on:
       - db
       - redis
+      - rabbitmq
     environment:
       - POSTGRES_DB=cataloguedb
       - POSTGRES_USER=catalogueuser
       - POSTGRES_PASSWORD=cataloguepass
+      - POSTGRES_HOST=catalogue-db
       - REDIS_HOST=redis
       - REDIS_PORT=6380
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - RABBITMQ_EXCHANGE=goodfood.events
+      - STOCK_API_BASE=http://stock-api:8000/api
+    networks:
+      - goodfood-net
+
+  worker:
+    build: .
+    command: python manage.py consume_stock_events
+    depends_on:
+      - rabbitmq
+    volumes:
+      - .:/app
+    environment:
+      - POSTGRES_DB=cataloguedb
+      - POSTGRES_USER=catalogueuser
+      - POSTGRES_PASSWORD=cataloguepass
+      - POSTGRES_HOST=catalogue-db
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - RABBITMQ_EXCHANGE=goodfood.events
+      - STOCK_API_BASE=http://stock-api:8000/api
+    networks:
+      - goodfood-net
 
   db:
     image: postgres:15
@@ -26,11 +57,32 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      goodfood-net:
+        aliases:
+          - catalogue-db
 
   redis:
     image: redis:7
     ports:
       - "6380:6380"
+    networks:
+      - goodfood-net
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - goodfood-net
 
 volumes:
   db_data:
+
+networks:
+  goodfood-net:
+    external: true

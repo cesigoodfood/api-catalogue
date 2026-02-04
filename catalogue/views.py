@@ -1,4 +1,7 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, status
+from rest_framework.response import Response
+from django.conf import settings
+import requests
 from .models import Product, Category, Menu, ProductCategory, CategoryMenu, ProductCategoryMenu
 from .serializers import (
     ProductSerializer,
@@ -27,6 +30,55 @@ class ProductViewSet(viewsets.ModelViewSet):
         except (TypeError, ValueError):
             return qs.none()
         return qs.filter(restaurant_id=rid_int)
+
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        if response.status_code != status.HTTP_200_OK:
+            return response
+        product_id = response.data.get('id')
+        in_stock = None
+        base = getattr(settings, 'STOCK_API_BASE', '').rstrip('/')
+        if base and product_id is not None:
+            try:
+                url = f"{base}/products/{product_id}/availability/"
+                stock_resp = requests.get(url, timeout=2)
+                if stock_resp.status_code == 200:
+                    payload = stock_resp.json()
+                    in_stock = bool(payload.get('available'))
+            except Exception:
+                in_stock = None
+        response.data['in_stock'] = in_stock
+        return response
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        if response.status_code != status.HTTP_200_OK:
+            return response
+        data = response.data
+        items = data.get('results') if isinstance(data, dict) else data
+        if not isinstance(items, list):
+            return response
+        ids = [item.get('id') for item in items if isinstance(item, dict) and item.get('id') is not None]
+        in_stock_map = {}
+        base = getattr(settings, 'STOCK_API_BASE', '').rstrip('/')
+        if base and ids:
+            try:
+                url = f"{base}/products/availability/"
+                params = {'ids': ','.join(str(i) for i in ids)}
+                stock_resp = requests.get(url, params=params, timeout=2)
+                if stock_resp.status_code == 200:
+                    payload = stock_resp.json()
+                    if isinstance(payload, dict):
+                        in_stock_map = payload
+            except Exception:
+                in_stock_map = {}
+        for item in items:
+            pid = item.get('id')
+            if pid is None:
+                item['in_stock'] = None
+                continue
+            item['in_stock'] = bool(in_stock_map.get(str(pid))) if in_stock_map else None
+        return response
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
