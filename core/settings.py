@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-=ukysc43es1@361cvg6%(=jn0ehpk41v*rz0i=1o79z+s$4rfj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# En dev on accepte tous les hosts (ingress goodfood.local, etc.)
+ALLOWED_HOSTS = ["goodfood.local"]
 
 
 # Application definition
