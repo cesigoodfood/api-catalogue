@@ -20,6 +20,17 @@ from .models import (
 
 @override_settings(STOCK_API_BASE="http://stock.test/api")
 class CatalogueRoutesTests(APITestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.publish_event_patcher = patch("catalogue.signals.publish_catalogue_event")
+        cls.publish_event_patcher.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.publish_event_patcher.stop()
+        super().tearDownClass()
+
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             username="tester",
@@ -375,6 +386,17 @@ class CatalogueRoutesTests(APITestCase):
 
 
 class CatalogueDatabaseIntegrationTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.publish_event_patcher = patch("catalogue.signals.publish_catalogue_event")
+        cls.publish_event_patcher.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.publish_event_patcher.stop()
+        super().tearDownClass()
+
     def test_database_connection_executes_basic_query(self):
         db = connections["default"]
         db.ensure_connection()
