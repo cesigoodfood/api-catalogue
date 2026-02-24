@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-=ukysc43es1@361cvg6%(=jn0ehpk41v*rz0i=1o79z+s$4rfj
 DEBUG = True
 
 # En dev on accepte tous les hosts (ingress goodfood.local, etc.)
-ALLOWED_HOSTS = ["goodfood.local", "goodfood.alan-courtois.fr"]
+ALLOWED_HOSTS = ["api.goodfood.local", "api.goodfood.alan-courtois.fr", "goodfood.local", "goodfood.alan-courtois.fr", "api-catalogue.goodfood-dev.svc.cluster.local"]
 
 
 # Application definition
@@ -39,11 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'catalogue.apps.CatalogueConfig',
     'rest_framework',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,6 +54,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://goodfood.local",
+    "http://localhost:3000",
+    "https://goodfood.alan-courtois.fr",
+    "https://api.goodfood.alan-courtois.fr"
+]
+# Optionally allow everything for dev
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'core.urls'
 
