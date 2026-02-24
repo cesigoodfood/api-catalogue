@@ -1,6 +1,8 @@
 from unittest.mock import Mock, patch
 
 from django.contrib.auth import get_user_model
+from django.db import connections
+from django.test import TestCase
 from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
@@ -370,3 +372,48 @@ class CatalogueRoutesTests(APITestCase):
         )
         self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(ProductCategory.objects.filter(id=link_id).exists())
+
+
+class CatalogueDatabaseIntegrationTests(TestCase):
+    def test_database_connection_executes_basic_query(self):
+        db = connections["default"]
+        db.ensure_connection()
+        with db.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            row = cursor.fetchone()
+        self.assertEqual(row[0], 1)
+
+    def test_database_persists_and_reads_catalogue_entities(self):
+        category = Category.objects.create(
+            restaurant_id=42,
+            name="Integration Category",
+            description="db test",
+        )
+        product = Product.objects.create(
+            restaurant_id=42,
+            name="Integration Product",
+            description="db test",
+            price="14.20",
+            category=category,
+        )
+
+        fetched = Product.objects.select_related("category").get(id=product.id)
+        self.assertEqual(fetched.name, "Integration Product")
+        self.assertEqual(fetched.category.id, category.id)
+        self.assertEqual(fetched.restaurant_id, 42)
+
+    def test_database_cascade_delete_menu_removes_menu_categories(self):
+        menu = Menu.objects.create(
+            restaurant_id=7,
+            name="Integration Menu",
+            description="db cascade",
+            price="12.00",
+        )
+        category_menu = CategoryMenu.objects.create(
+            menu=menu,
+            name="Cascade Category",
+            quantity=1,
+        )
+
+        menu.delete()
+        self.assertFalse(CategoryMenu.objects.filter(id=category_menu.id).exists())
