@@ -407,12 +407,12 @@ class CatalogueDatabaseIntegrationTests(TestCase):
 
     def test_database_persists_and_reads_catalogue_entities(self):
         category = Category.objects.create(
-            restaurant_id=42,
+            restaurant_id="test_id",
             name="Integration Category",
             description="db test",
         )
         product = Product.objects.create(
-            restaurant_id=42,
+            restaurant_id="test_id",
             name="Integration Product",
             description="db test",
             price="14.20",
@@ -422,11 +422,11 @@ class CatalogueDatabaseIntegrationTests(TestCase):
         fetched = Product.objects.select_related("category").get(id=product.id)
         self.assertEqual(fetched.name, "Integration Product")
         self.assertEqual(fetched.category.id, category.id)
-        self.assertEqual(fetched.restaurant_id, 42)
+        self.assertEqual(fetched.restaurant_id, "test_id")
 
     def test_database_cascade_delete_menu_removes_menu_categories(self):
         menu = Menu.objects.create(
-            restaurant_id=7,
+            restaurant_id="test_id",
             name="Integration Menu",
             description="db cascade",
             price="12.00",
