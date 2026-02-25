@@ -20,12 +20,12 @@ router.register(r'products-categories-menu', ProductCategoryMenuViewSet, basenam
 urlpatterns = [
     path('', include(router.urls)),
     # nested endpoints for restaurants
-    path('restaurants/<int:restaurant_id>/products/', ProductViewSet.as_view({'get': 'list', 'post': 'create'}), name='restaurant-products-list'),
-    path('restaurants/<int:restaurant_id>/products/<int:pk>/', ProductViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='restaurant-products-detail'),
-    path('restaurants/<int:restaurant_id>/categories/', CategoryViewSet.as_view({'get': 'list', 'post': 'create'}), name='restaurant-categories-list'),
-    path('restaurants/<int:restaurant_id>/categories/<int:pk>/', CategoryViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='restaurant-categories-detail'),
-    path('restaurants/<int:restaurant_id>/menus/', MenuViewSet.as_view({'get': 'list', 'post': 'create'}), name='restaurant-menus-list'),
-    path('restaurants/<int:restaurant_id>/menus/<int:pk>/', MenuViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='restaurant-menus-detail'),
+    path('restaurants/<str:restaurant_id>/products/', ProductViewSet.as_view({'get': 'list', 'post': 'create'}), name='restaurant-products-list'),
+    path('restaurants/<str:restaurant_id>/products/<int:pk>/', ProductViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='restaurant-products-detail'),
+    path('restaurants/<str:restaurant_id>/categories/', CategoryViewSet.as_view({'get': 'list', 'post': 'create'}), name='restaurant-categories-list'),
+    path('restaurants/<str:restaurant_id>/categories/<int:pk>/', CategoryViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='restaurant-categories-detail'),
+    path('restaurants/<str:restaurant_id>/menus/', MenuViewSet.as_view({'get': 'list', 'post': 'create'}), name='restaurant-menus-list'),
+    path('restaurants/<str:restaurant_id>/menus/<int:pk>/', MenuViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='restaurant-menus-detail'),
 
     # nested endpoints for menus
     path('menus/<int:menu_id>/categories/', CategoryMenuViewSet.as_view({'get': 'list', 'post': 'create'}), name='menu-categories-list'),

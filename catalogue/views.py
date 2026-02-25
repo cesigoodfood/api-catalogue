@@ -16,7 +16,7 @@ from .serializers import (
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'description']
 
@@ -25,11 +25,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         rid = self.kwargs.get('restaurant_id') or self.request.query_params.get('restaurant_id') or self.request.query_params.get('restaurant')
         if rid is None:
             return qs
-        try:
-            rid_int = int(rid)
-        except (TypeError, ValueError):
-            return qs.none()
-        return qs.filter(restaurant_id=rid_int)
+        return qs.filter(restaurant_id=rid)
 
     def retrieve(self, request, *args, **kwargs):
         response = super().retrieve(request, *args, **kwargs)
@@ -84,7 +80,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
@@ -93,17 +89,13 @@ class CategoryViewSet(viewsets.ModelViewSet):
         rid = self.kwargs.get('restaurant_id') or self.request.query_params.get('restaurant_id') or self.request.query_params.get('restaurant')
         if rid is None:
             return qs
-        try:
-            rid_int = int(rid)
-        except (TypeError, ValueError):
-            return qs.none()
-        return qs.filter(restaurant_id=rid_int)
+        return qs.filter(restaurant_id=rid)
 
 
 class MenuViewSet(viewsets.ModelViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
@@ -113,33 +105,25 @@ class MenuViewSet(viewsets.ModelViewSet):
         rid = self.kwargs.get('restaurant_id') or self.request.query_params.get('restaurant_id') or self.request.query_params.get('restaurant')
         if rid is None:
             return qs
-        try:
-            rid_int = int(rid)
-        except (TypeError, ValueError):
-            return qs.none()
-        return qs.filter(restaurant_id=rid_int)
+        return qs.filter(restaurant_id=rid)
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         qs = super().get_queryset().select_related('product')
         rid = self.kwargs.get('restaurant_id') or self.request.query_params.get('restaurant_id') or self.request.query_params.get('restaurant')
         if rid is None:
             return qs
-        try:
-            rid_int = int(rid)
-        except (TypeError, ValueError):
-            return qs.none()
-        return qs.filter(product__restaurant_id=rid_int)
+        return qs.filter(product__restaurant_id=rid)
 
 
 class CategoryMenuViewSet(viewsets.ModelViewSet):
     queryset = CategoryMenu.objects.select_related('menu').all()
     serializer_class = CategoryMenuSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -154,17 +138,13 @@ class CategoryMenuViewSet(viewsets.ModelViewSet):
         rid = self.kwargs.get('restaurant_id') or self.request.query_params.get('restaurant_id') or self.request.query_params.get('restaurant')
         if rid is None:
             return qs
-        try:
-            rid_int = int(rid)
-        except (TypeError, ValueError):
-            return qs.none()
-        return qs.filter(menu__restaurant_id=rid_int)
+        return qs.filter(menu__restaurant_id=rid)
 
 
 class ProductCategoryMenuViewSet(viewsets.ModelViewSet):
     queryset = ProductCategoryMenu.objects.all()
     serializer_class = ProductCategoryMenuSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         qs = super().get_queryset().select_related('product')
@@ -179,8 +159,4 @@ class ProductCategoryMenuViewSet(viewsets.ModelViewSet):
         rid = self.kwargs.get('restaurant_id') or self.request.query_params.get('restaurant_id') or self.request.query_params.get('restaurant')
         if rid is None:
             return qs
-        try:
-            rid_int = int(rid)
-        except (TypeError, ValueError):
-            return qs.none()
-        return qs.filter(product__restaurant_id=rid_int)
+        return qs.filter(product__restaurant_id=rid)

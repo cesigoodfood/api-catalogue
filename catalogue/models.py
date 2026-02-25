@@ -16,7 +16,7 @@ class Menu(TimestampedModel):
     description = models.TextField(blank=True, null=True)
     image_url = models.URLField(max_length=500, blank=True, null=True, db_column='imageUrl')
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    restaurant_id = models.BigIntegerField(db_index=True, db_column='restaurantId')
+    restaurant_id = models.CharField(max_length=50, db_index=True, db_column='restaurantId')
 
     class Meta:
         db_table = 'menus'
@@ -26,7 +26,7 @@ class Menu(TimestampedModel):
 
 
 class Category(TimestampedModel):
-    restaurant_id = models.BigIntegerField(db_index=True, db_column='restaurantId')
+    restaurant_id = models.CharField(max_length=50, db_index=True, db_column='restaurantId')
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     image_url = models.URLField(max_length=500, blank=True, null=True, db_column='imageUrl')
@@ -53,7 +53,7 @@ class CategoryMenu(models.Model):
 
 class Product(TimestampedModel):
     name = models.CharField(max_length=255)
-    restaurant_id = models.BigIntegerField(db_index=True, db_column='restaurantId')
+    restaurant_id = models.CharField(max_length=50, db_index=True, db_column='restaurantId')
     description = models.TextField(blank=True, null=True)
     image_url = models.URLField(max_length=500, blank=True, null=True, db_column='imageUrl')
     price = models.DecimalField(max_digits=10, decimal_places=2)
