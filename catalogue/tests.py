@@ -268,7 +268,7 @@ class CatalogueRoutesTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["name"], payload["name"])
-        self.assertEqual(response.data["restaurant_id"], payload["restaurant_id"])
+        self.assertEqual(response.data["restaurant_id"], str(payload["restaurant_id"]))
 
     def test_authenticated_can_update_product(self):
         self.authenticate()

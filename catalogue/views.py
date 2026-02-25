@@ -16,7 +16,7 @@ from .serializers import (
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'description']
 
@@ -80,7 +80,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
@@ -95,7 +95,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class MenuViewSet(viewsets.ModelViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
@@ -110,7 +110,7 @@ class MenuViewSet(viewsets.ModelViewSet):
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         qs = super().get_queryset().select_related('product')
@@ -123,7 +123,7 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
 class CategoryMenuViewSet(viewsets.ModelViewSet):
     queryset = CategoryMenu.objects.select_related('menu').all()
     serializer_class = CategoryMenuSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -144,7 +144,7 @@ class CategoryMenuViewSet(viewsets.ModelViewSet):
 class ProductCategoryMenuViewSet(viewsets.ModelViewSet):
     queryset = ProductCategoryMenu.objects.all()
     serializer_class = ProductCategoryMenuSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         qs = super().get_queryset().select_related('product')
